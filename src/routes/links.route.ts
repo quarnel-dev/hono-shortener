@@ -2,10 +2,12 @@ import { Hono } from 'hono'
 import { describeRoute, resolver, validator } from 'hono-openapi'
 
 import { nanoid } from 'nanoid'
+import * as v from 'valibot'
 
 import { createLinkSchema } from '../schemas/createLinks.schema'
 import { linkResponseSchema } from '../schemas/linkResponse.schema'
 import { errorSchema } from '../schemas/error.schema'
+import { linkStats } from '../schemas/linkStats.schema'
 
 import { dbLinks } from '../db'
 
@@ -65,5 +67,25 @@ links.post(
     return ctx.json({ code, url, shortUrl }, 201)
   }
 )
+
+links.get(
+  '/',
+  describeRoute({
+    tags: ['links'],
+    summary: 'List all links',
+    description: 'Returns array of all short links sorted by creation date DESC',
+    responses: {
+      200: {
+        description: 'Array of short links',
+        content: { 'application/json': { schema: resolver(v.array(linkStats)) } },
+      },
+    },
+  }),
+  (ctx) => {
+    const allLinks = dbLinks.findAll()
+    return ctx.json(allLinks, 200)
+  }
+)
+
 
 export default links
