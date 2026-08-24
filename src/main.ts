@@ -3,6 +3,7 @@ import { openAPIRouteHandler } from 'hono-openapi'
 import { Scalar } from '@scalar/hono-api-reference'
 
 import links from './routes/links.route'
+import redirect from './routes/redirect.route'
 
 const app = new Hono()
 
@@ -35,5 +36,7 @@ app.get(
     },
   })
 )
+
+app.route('/', redirect)
 
 export default app
