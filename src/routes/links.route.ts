@@ -7,7 +7,7 @@ import * as v from 'valibot'
 import { createLinkSchema } from '../schemas/createLinks.schema'
 import { linkResponseSchema } from '../schemas/linkResponse.schema'
 import { errorSchema } from '../schemas/error.schema'
-import { linkStats } from '../schemas/linkStats.schema'
+import { linkStatsSchema } from '../schemas/linkStats.schema'
 
 import { dbLinks } from '../db'
 
@@ -77,7 +77,7 @@ links.get(
     responses: {
       200: {
         description: 'Array of short links',
-        content: { 'application/json': { schema: resolver(v.array(linkStats)) } },
+        content: { 'application/json': { schema: resolver(v.array(linkStatsSchema)) } },
       },
     },
   }),
@@ -87,5 +87,31 @@ links.get(
   }
 )
 
+links.get(
+  '/:code/stats',
+  describeRoute({
+    tags: ['links'],
+    summary: 'Get link stats',
+    description: 'Returns click count and creation timestamp for a specific code',
+    responses: {
+      200: {
+        description: 'Link statistics',
+        content: { 'application/json': { schema: resolver(linkStatsSchema) } },
+      },
+      404: {
+        description: 'Link not found',
+        content: { 'application/json': { schema: resolver(errorSchema) } },
+      },
+    },
+  }),
+  (ctx) => {
+    const code = ctx.req.param('code')
+    const link = dbLinks.findByCode(code)
+
+    if (!link) return ctx.json({ error: 'Link not found' }, 404)
+
+    return ctx.json(link, 200)
+  }
+)
 
 export default links

@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-export const linkStats = v.object({
+export const linkStatsSchema  = v.object({
   url: v.string(),
   code: v.string(),
   clicks: v.number(),
