@@ -114,4 +114,30 @@ links.get(
   }
 )
 
+links.delete(
+  '/:code',
+  describeRoute({
+    tags: ['links'],
+    summary: 'Delete short link',
+    description: 'Removes a short link record by its unique code',
+    responses: {
+      204: { description: 'Link deleted successfully' },
+      404: {
+        description: 'Link not found',
+        content: { 'application/json': { schema: resolver(errorSchema) } },
+      },
+    },
+  }),
+  (ctx) => {
+    const code = ctx.req.param('code')
+    const res = dbLinks.delete(code)
+
+    if (res.changes === 0) {
+      return ctx.json({ error: 'Link not found' }, 404)
+    }
+
+    return ctx.body(null, 204)
+  }
+)
+
 export default links
