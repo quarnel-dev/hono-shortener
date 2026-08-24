@@ -2,7 +2,8 @@ import { Database } from 'bun:sqlite'
 
 import type { LinkRecord } from '../types/linkRecord.type'
 
-export const db = new Database('links.sqlite')
+const dbPath = process.env.NODE_ENV === 'test' ? ':memory:' : 'links.sqlite'
+export const db = new Database(dbPath)
 
 db.run('PRAGMA journal_mode = WAL;')
 
