@@ -1,15 +1,39 @@
-# hono-shortener
+# Hono URL Shortener
 
-To install dependencies:
+[Read in Russian](README.ru.md) | English
 
+Lightweight URL Shortener REST API built with Hono, Bun, Valibot, and OpenAPI.
+
+## Features
+
+- **Validation:** Runtime schema validation with Valibot.
+- **OpenAPI / Scalar:** Self-documenting API at `/scalar` (disabled in production).
+- **Errors:** Standardized JSON error format (`{ "error": "..." }`).
+- **Tests:** Integrated E2E suite via `bun:test`.
+
+## Quick Start
 ```bash
-bun install
+bun install 
+bun dev
 ```
 
-To run:
+- **Server:** http://localhost:3000
+- **Docs:** http://localhost:3000/scalar
 
-```bash
-bun run index.ts
-```
+## Scripts
 
-This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+- `bun dev` — Development server with watch mode
+- `bun start` — Production server
+- `bun test` — Run unit & E2E tests
+
+## API Reference
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/links` | Create a shortened URL |
+| `GET` | `/links` | List all shortened URLs |
+| `GET` | `/links/:code/stats` | Get link click statistics |
+| `DELETE` | `/links/:code` | Delete a shortened link |
+| `GET` | `/:code` | Redirect to original URL (302) |
+
+*Made with ❤️ by Quarnel*
